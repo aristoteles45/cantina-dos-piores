@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Fórum dos Amigos</title>
+  <style>
+    body { 
+      font-family: 'Comic Sans MS', cursive, sans-serif; 
+      margin: 20px; 
+    }
+    #messages { 
+      border: 1px solid #ccc; 
+      padding: 10px; 
+      height: 300px; 
+      overflow-y: scroll; 
+      margin-bottom: 10px; 
+    }
+    #form { 
+      display: flex; 
+    }
+    #form input { 
+      flex: 1; 
+      padding: 10px; 
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+    #form button { 
+      padding: 10px; 
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Fórum dos Amigos</h1>
+
+<div id="messages"></div>
+
+<form id="form">
+  <input id="input" autocomplete="off" placeholder="Digite sua mensagem..." />
+  <button>Enviar</button>
+</form>
+
+<script>
+  const form = document.getElementById('form');
+  const input = document.getElementById('input');
+  const messages = document.getElementById('messages');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (input.value) {
+      const msg = document.createElement('div');
+      msg.textContent = input.value;
+      messages.appendChild(msg);
+      input.value = '';
+      messages.scrollTop = messages.scrollHeight;
+    }
+  });
+</script>
+
+</body>
+</html>
