@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cantina dos Piores</title>
+  <style>
+    body { 
+      font-family: 'Tahoma', 'Arial', sans-serif; 
+      background-color: #e0e0e0; 
+      color: #000000;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      font-size: 32px;
+      font-family: 'Comic Sans MS', 'Tahoma', sans-serif; /* Fonte Comic Sans */
+      color: #0078D7; 
+      background-color: #C4D6F6; 
+      padding: 15px 20px;
+      margin: 0;
+      border-bottom: 3px solid #0078D7;
+      text-align: left;
+      margin-left: 0px;
+      text-shadow: 2px 2px 4px #A3A3A3;
+    }
+    #messages { 
+      border: 2px solid #A4A4A4; 
+      padding: 15px; 
+      height: 500px; 
+      overflow-y: scroll; 
+      margin: 20px auto; 
+      width: 80%;
+      background-color: #FFFFFF;
+      box-shadow: 2px 2px 5px #B4B4B4;
+    }
+    #form { 
+      display: flex; 
+      margin-top: 50px; 
+      justify-content: center;
+      background-color: #FFFFFF; 
+      padding: 20px;
+      border-top: 2px solid #A4A4A4; 
+      box-shadow: 2px 2px 4px #B4B4B4;
+    }
+    #form input, #form button { 
+      padding: 12px; 
+      margin: 5px;
+      font-size: 16px;
+      border: 1px solid #A4A4A4;
+      background: linear-gradient(145deg, #a5a5a5, #c4c4c4); /* Gradiente metálico */
+      color: #333333;
+      border-radius: 0px;
+      box-shadow: 1px 1px 3px #B4B4B4;
+      transition: all 0.2s ease-in-out;
+    }
+    #form button:hover {
+      background: linear-gradient(145deg, #c4c4c4, #a5a5a5);
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+      transform: scale(1.1);
+    }
+    #form button:active {
+      background: linear-gradient(145deg, #d3d3d3, #a0a0a0);
+      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    }
+    #nameForm {
+      text-align: center;
+      padding: 30px;
+      background-color: #FFFFFF;
+      border-bottom: 2px solid #A4A4A4;
+      box-shadow: 2px 2px 4px #B4B4B4;
+    }
+    .color-option {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      margin: 5px;
+      cursor: pointer;
+      border: 1px solid #A4A4A4;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    .color-option:hover {
+      transform: scale(1.2);
+      border: 2px solid #0078D7;
+    }
+    .color-option.selected {
+      border: 2px solid #0078D7;
+    }
+    .message-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .profile-pic {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
+      border: 1px solid #A4A4A4;
+    }
+    #imageInput {
+      display: none;
+    }
+    .button-large {
+      padding: 15px;
+      font-size: 18px;
+      background: linear-gradient(145deg, #a5a5a5, #c4c4c4); /* Gradiente metálico */
+      color: #FFFFFF;
+      border: 1px solid #A4A4A4;
+      cursor: pointer;
+      border-radius: 0px;
+      box-shadow: 1px 1px 3px #B4B4B4;
+      transition: all 0.2s ease-in-out;
+    }
+    .button-large:hover {
+      background: linear-gradient(145deg, #c4c4c4, #a5a5a5);
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+      transform: scale(1.1);
+    }
+    .button-large:active {
+      background: linear-gradient(145deg, #d3d3d3, #a0a0a0);
+      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+<h1>Cantina dos Piores</h1>
+
+<!-- Formulário para perguntar o nome, cor e imagem -->
+<div id="nameForm">
+  <input id="nameInput" placeholder="Digite seu nome..." /><br><br>
+  
+  <label>Escolha sua cor:</label><br><br>
+  <div id="colorTable" style="text-align:center;"></div><br>
+
+  <label>Escolha uma imagem de perfil:</label><br><br>
+  <input type="file" id="profilePicInput" accept="image/*"><br><br>
+
+  <button class="button-large" onclick="setName()">Entrar</button>
+</div>
+
+<!-- Área de mensagens (inicialmente escondida) -->
+<div id="chatArea" style="display:none;">
+  <div id="messages"></div>
+
+  <form id="form">
+    <input id="input" autocomplete="off" placeholder="Digite sua mensagem..." />
+    <button class="button-large">Enviar Texto</button>
+    <button type="button" class="button-large" onclick="document.getElementById('imageInput').click()">📷 Enviar Imagem</button>
+  </form>
+  <input type="file" id="imageInput" accept="image/*" onchange="sendImage()">
+</div>
+
+<script>
+  let username = '';
+  let userColor = '';
+  let userProfilePic = '';
+
+  const colors = [
+    '#e6194b', '#3cb44b', '#ffe119', '#4363d8', 
+    '#f58231', '#911eb4', '#46f0f0', '#f032e6',
+    '#bcf60c', '#fabebe', '#008080', '#e6beff',
+    '#9a6324', '#fffac8', '#800000', '#aaffc3',
+    '#808000', '#ffd8b1', '#000075', '#808080'
+  ];
+
+  const colorTable = document.getElementById('colorTable');
+
+  colors.forEach(color => {
+    const colorDiv = document.createElement('div');
+    colorDiv.className = 'color-option';
+    colorDiv.style.backgroundColor = color;
+    colorDiv.onclick = function() {
+      document.querySelectorAll('.color-option').forEach(c => c.classList.remove('selected'));
+      colorDiv.classList.add('selected');
+      userColor = color;
+    };
+    colorTable.appendChild(colorDiv);
+  });
+
+  function setName() {
+    const nameInput = document.getElementById('nameInput');
+    const profilePicInput = document.getElementById('profilePicInput');
+
+    if (nameInput.value.trim() === '') {
+      alert('Por favor, digite seu nome!');
+      return;
+    }
+    if (userColor === '') {
+      alert('Por favor, escolha uma cor!');
+      return;
+    }
+    if (!profilePicInput.files[0]) {
+      alert('Por favor, envie uma imagem de perfil!');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      userProfilePic = event.target.result;
+      username = nameInput.value.trim();
+      document.getElementById('nameForm').style.display = 'none';
+      document.getElementById('chatArea').style.display = 'block';
+    };
+    reader.readAsDataURL(profilePicInput.files[0]);
+  }
+
+  const form = document.getElementById('form');
+  const input = document.getElementById('input');
+  const messages = document.getElementById('messages');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (input.value.trim()) {
+      sendMessage(input.value);
+      input.value = '';
+    }
+  });
+
+  function sendMessage(text) {
+    const msg = document.createElement('div');
+    msg.innerHTML = `
+      <div class="message-header">
+        <img src="${userProfilePic}" class="profile-pic">
+        <strong style="color:${userColor}">${username}:</strong>
+      </div>
+      <div>${text}</div>
+    `;
+    messages.appendChild(msg);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function sendImage() {
+    const imageInput = document.getElementById('imageInput');
+    if (imageInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const imgTag = `<img src="${event.target.result}" style="max-width:300px; border: 1px solid #A4A4A4; border-radius: 5px;">`;
+        sendMessage(imgTag);
+      };
+      reader.readAsDataURL(imageInput.files[0]);
+    }
+  }
+</script>
+
+</body>
+</html>
